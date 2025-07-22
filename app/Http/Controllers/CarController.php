@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Models\Destination;
+use App\Models\DestinationMission;
+use Carbon\Carbon;
 
 class CarController extends Controller
 {
-    /**
-     * نمایش فرم افزودن خودرو
-     */
+    
     public function create()
     {
         $drivers = Driver::all();
         return view('cars.create', compact('drivers'));
     }
 
-    /**
-     * ذخیره اطلاعات خودرو در پایگاه داده
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -39,14 +38,14 @@ class CarController extends Controller
             'owner_nationl_id' => 'required|string|max:20',
         ]);
 
-        // ترکیب کردن پلاک
-        $full_plate = $validated['car_plate_part1'] . 
-                      $validated['car_plate_letter'] . 
-                      $validated['car_plate_part2'] . 
-                      
+
+        $full_plate = $validated['car_plate_part1'] .
+                      $validated['car_plate_letter'] .
+                      $validated['car_plate_part2'] .
+
                       $validated['car_plate_part3'];
 
-        // ایجاد رکورد خودرو
+
         Car::create([
             'car_plate' => $full_plate,
             'driver_id' => $validated['driver_id'],
@@ -66,7 +65,143 @@ class CarController extends Controller
 
     public function show()
     {
-        $routes = Car::all();
+        $routes = Car::with('driver')->get();
         return view('cars.show', compact('routes'));
     }
+    public function attendance()
+    {
+        $routes = Car::with('driver')->get();
+        return view('cars.AttendanceCar', compact('routes'));
+    }
+
+
+    public function getByType($type, Request $request)
+    {
+
+        $destinationName = $request->query('destination');
+        Log::info('پارامتر destination دریافت شد: ' . $destinationName);
+        $destinations = Destination::where('destination', $destinationName)->get();
+        Log::info('تعداد مقصدهای یافت شده:', ['count' => $destinations->count(), 'destination' => $destinationName]);
+        if ($destinations->isEmpty()) {
+            return response()->json(['error' => 'مقصدی یافت نشد.'], 404);
+        }
+
+        $destinationIds = $destinations->pluck('id');
+
+        $cars = $type === 'vp'
+            ? Car::whereIn('car_type', ['vip', 'passenger'])->get()
+            : Car::where('car_type', $type)->get();
+
+        $carPriorityList = [];
+
+        foreach ($cars as $car) {
+            $missions = \App\Models\Mission::where('car_id', $car->id)
+                ->whereHas('destinations', function ($q) use ($destinationIds) {
+                    $q->whereIn('destinations_id', $destinationIds);
+                })
+                ->orderByDesc('departure_date')
+                ->orderByDesc('departure_time')
+                ->get();
+
+            $lastDateTime = Carbon::createFromFormat('Y-m-d H:i:s', '1900-01-01 00:00:00');
+
+            if ($missions->isNotEmpty()) {
+                $lastMission = $missions->first();
+
+              
+                $date = $lastMission->departure_date;
+                $time = $lastMission->departure_time;
+
+                $lastDateTime = Carbon::parse("$date $time");
+            }
+
+            $carPriorityList[] = [
+                'id' => $car->id,
+                'car_plate' => $car->car_plate,
+                'last_mission_to_destination' => $lastDateTime->toDateTimeString(),
+                'timestamp' => $lastDateTime->timestamp, // برای مرتب‌سازی بهتر
+            ];
+        }
+
+     
+        usort($carPriorityList, function ($a, $b) {
+            return $a['timestamp'] <=> $b['timestamp'];
+        });
+
+        
+        $carPriorityList = array_map(function ($item) {
+            unset($item['timestamp']);
+            return $item;
+        }, $carPriorityList);
+        Log::info('🚗 Car priority list: ', $carPriorityList);
+        return response()->json($carPriorityList);
+    }
+
+
+
+
+
+    public function getCarInfo($car_id)
+    {
+        $car = Car::with('driver')->find($car_id);
+
+        if (!$car) {
+            return response()->json(['success' => false, 'message' => 'خودرو یافت نشد.'], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'car' => [
+                'id' => $car->id,
+                'car_model' => $car->car_model,
+                'car_plate' => $car->car_plate,
+                'owner_name' => $car->owner_name,
+                'owner_lsetname' => $car->owner_lsetname,
+                'owner_phonenumber' => $car->owner_phonenumber,
+                'owner_nationl_id' => $car->owner_nationl_id,
+                'driver_id' => $car->driver->id ?? null,
+                'driver_name' => $car->driver ? $car->driver->name . ' ' . $car->driver->last_name : 'نامشخص',
+            ]
+        ]);
+    }
+    public function getAllDrivers()
+    {
+        $drivers = Driver::select('id', 'name', 'last_name')->get();
+        return response()->json($drivers);
+    }
+    public function updateDriver(Request $request, Car $car)
+    {
+        $request->validate([
+          'driver_id' => 'required|exists:drivers,id',
+        ]);
+
+        $car->driver_id = $request->driver_id;
+        $car->save();
+
+        return response()->json(['success' => true]);
+    }
+
+
+    public function searchByPlate(Request $request)
+    {
+        $plate = $request->query('plate'); // مثال: 12-B-345-67
+        $normalized = str_replace('-', '', $plate); // نتیجه: 12B34567
+
+        $car = Car::where('car_plate', $normalized)->first();
+
+        if (!$car) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خودرو یافت نشد.'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'model' => $car->car_model,
+            'owner' => $car->owner_name . ' ' . $car->owner_lsetname
+        ]);
+    }
+
+
 }

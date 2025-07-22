@@ -47,7 +47,7 @@
             <li class="group relative cursor-pointer">
                 <span class="hover:text-yellow-600 transition-colors duration-300">ماموریت</span>
                 <ul class="absolute dropdown-menu bg-white text-black mt-2 rounded shadow-md min-w-max z-10 origin-top transform scale-y-0 opacity-0 group-hover:scale-y-100 group-hover:opacity-100">
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">جدید</li>
+                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">  <a href="{{ route('missions.create') }}">جدید</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">در جریان</li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">خاتمه یافته</li>
                 </ul>
@@ -57,12 +57,13 @@
                 <span class="hover:text-yellow-600 transition-colors duration-300">خودرو</span>
                 <ul class="absolute dropdown-menu bg-white text-black mt-2 rounded shadow-md min-w-max z-10 origin-top transform scale-y-0 opacity-0 group-hover:scale-y-100 group-hover:opacity-100">
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">در ماموریت</li>
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">حضور و غیاب</li>
+                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">   <a href="{{ route('cars.attendance') }}">حضور و غیاب</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">آماده کار</li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">مرخصی</li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> تعمیر</li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a href="{{ route('cars.create') }}">افزودن خودرو</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a href="{{ route('cars.show') }}">نمایش اطلاعات خودروها</a></li>
+                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a href="{{ route('cars.attendance.edit') }}">ویرایش وضعیت حضور</a> </li>
                 </ul>
             </li>
             <!-- مسیر -->
@@ -82,6 +83,7 @@
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a href="{{ route('drivers.active') }}">رانندگان فعال</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a href="{{ route('drivers.inactive') }}">رانندگان غیر فعال</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a href="{{ route('drivers.search') }}">ویرایش اطلاعات</a></li>
+                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a href="{{ route('permits.edit') }}">ویرایش وضعیت پرمیت</a></li>
                 </ul>
             </li>
         </ul>

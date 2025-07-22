@@ -24,8 +24,10 @@ class DriverController extends Controller
         ]);
 
         try {
-            Driver::create($validated);
-            return redirect()->back()->with('success', 'راننده با موفقیت ثبت شد.');
+            $driver = Driver::create($validated);
+             // Driver::create($validated);
+           // return redirect()->back()->with('success', 'راننده با موفقیت ثبت شد.');
+           return redirect()->route('permits.create', ['driver_id' => $driver->id]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'در ثبت اطلاعات مشکلی پیش آمد. لطفاً دوباره تلاش کنید.');
         }
@@ -35,8 +37,7 @@ class DriverController extends Controller
     {
         $driver = null;
 
-        // اگر national_id ارسال شده باشد، بررسی و جستجو انجام می‌شود
-        if ($request->has('national_id')) {
+                if ($request->has('national_id')) {
             $request->validate([
                 'national_id' => 'required|digits:10',
             ]);
@@ -48,8 +49,7 @@ class DriverController extends Controller
             }
         }
 
-        // نمایش فرم جستجو به همراه فرم ویرایش اگر راننده‌ای پیدا شده باشد
-        return view('drivers.edit', compact('driver'));
+               return view('drivers.edit', compact('driver'));
     }
 
     public function update(Request $request, Driver $driver)
@@ -76,11 +76,9 @@ class DriverController extends Controller
 
 public function inactive()
 {
-    // دریافت رانندگان غیر فعال
-    $inactiveDrivers = Driver::where('status', 'inactive')->get();
+       $inactiveDrivers = Driver::where('status', 'inactive')->get();
 
-    // ارسال داده به ویو 'drivers.inactive' با نام متغیر صحیح
-    return view('drivers.inactive', compact('inactiveDrivers'));
+        return view('drivers.inactive', compact('inactiveDrivers'));
 }
 
 }

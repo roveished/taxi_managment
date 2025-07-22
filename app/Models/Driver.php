@@ -23,10 +23,14 @@ class Driver extends Model
         'date_of_birth' => 'date', 
     ];
 
-    //رابطه با جدول car
+   
     public function car()
     {
         return $this->hasOne(Car::class);
     }
+    public function permit()
+{
+    return $this->hasOne(Permit::class, 'driver_id');
+}
 }
 

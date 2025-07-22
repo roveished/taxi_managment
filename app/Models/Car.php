@@ -28,9 +28,7 @@ class Car extends Model
         'collaboration_end_date' => 'date',
     ];
 
-    /**
-     * رابطه با مدل Driver
-     */
+  
     public function driver()
     {
         return $this->belongsTo(Driver::class);
