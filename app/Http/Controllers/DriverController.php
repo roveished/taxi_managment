@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Driver;
+use Carbon\Carbon;
 
 class DriverController extends Controller
 {
@@ -22,12 +23,20 @@ class DriverController extends Controller
             'date_of_birth' => 'required|date',
             'status' => 'required|in:active,inactive',
         ]);
+        $birthDate = Carbon::parse($validated['date_of_birth']);
+        $age = $birthDate->age;
+        if ($age < 18) {
+            return redirect()->back()->withInput()->with('error', 'سن راننده باید حداقل ۱۸ سال باشد.');
+        }
 
         try {
             $driver = Driver::create($validated);
-             // Driver::create($validated);
-           // return redirect()->back()->with('success', 'راننده با موفقیت ثبت شد.');
-           return redirect()->route('permits.create', ['driver_id' => $driver->id]);
+            // Driver::create($validated);
+            // return redirect()->back()->with('success', 'راننده با موفقیت ثبت شد.');
+            return redirect()->back()
+            ->with('success', 'راننده با موفقیت ثبت شد.')
+            ->with('redirect_to', route('permits.create', ['driver_id' => $driver->id]));
+        
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'در ثبت اطلاعات مشکلی پیش آمد. لطفاً دوباره تلاش کنید.');
         }
@@ -37,7 +46,7 @@ class DriverController extends Controller
     {
         $driver = null;
 
-                if ($request->has('national_id')) {
+        if ($request->has('national_id')) {
             $request->validate([
                 'national_id' => 'required|digits:10',
             ]);
@@ -49,7 +58,7 @@ class DriverController extends Controller
             }
         }
 
-               return view('drivers.edit', compact('driver'));
+        return view('drivers.edit', compact('driver'));
     }
 
     public function update(Request $request, Driver $driver)
@@ -69,16 +78,16 @@ class DriverController extends Controller
     }
 
     public function active()
-{
-    $activeDrivers = Driver::where('status', 'active')->get();
-    return view('drivers.active', compact('activeDrivers'));
-}
+    {
+        $activeDrivers = Driver::where('status', 'active')->get();
+        return view('drivers.active', compact('activeDrivers'));
+    }
 
-public function inactive()
-{
-       $inactiveDrivers = Driver::where('status', 'inactive')->get();
+    public function inactive()
+    {
+        $inactiveDrivers = Driver::where('status', 'inactive')->get();
 
         return view('drivers.inactive', compact('inactiveDrivers'));
-}
+    }
 
 }

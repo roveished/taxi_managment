@@ -40,7 +40,7 @@ class DestinationController extends Controller
      try {
          $route = Destination::create($validated);
 
-        
+
          if ($request->ajax()) {
              return response()->json([
                  'success' => true,
@@ -126,7 +126,7 @@ class DestinationController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-      
+
         $exists = Destination::where('origin', $request->origin)
                              ->where('destination', $request->destination)
                              ->exists();
@@ -136,7 +136,7 @@ class DestinationController extends Controller
                 return response()->json([
                   'success' => false,
                   'message' => 'این مسیر قبلاً ثبت شده است!'
-                ], 409); 
+                ], 409);
             }
             return redirect()->back()->with('error', 'این مسیر قبلاً ثبت شده است!')->withInput();
         }
@@ -212,9 +212,9 @@ class DestinationController extends Controller
         $route->distonce = $validated['distonce'];
         $route->save();
 
-        return redirect()->route('destination.edit')->with('success', 'اطلاعات مسیر با موفقیت به‌روزرسانی شد.');
+        return redirect()->route('destination.show')->with('success', 'اطلاعات مسیر با موفقیت به‌روزرسانی شد.');
     }
-  
+
     public function show()
     {
         $routes = Destination::all();

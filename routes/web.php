@@ -72,3 +72,34 @@ Route::get('/cars/search', [CarController::class, 'searchByPlate']);
 
 Route::post('/inspections/store', [CarInspectionController::class, 'store'])->name('inspections.store');
 
+Route::get('/missions/inprogress', [MissionController::class, 'inprogress'])->name('missions.inprogress');
+Route::get('/missions/inprogress', [MissionController::class, 'showInProgress'])->name('missions.inprogress');
+
+
+Route::post('/missions/calculate-defaults', [MissionController::class, 'calculateDefaults'])->name('missions.calculate.defaults');
+Route::post('/missions/end', [MissionController::class, 'endMission'])->name('missions.end');
+Route::get('/missions/finished', [MissionController::class, 'showInfinished'])->name('missions.finished');
+Route::get('/missions/{id}/edit', [MissionController::class, 'edit'])->name('missions.edit');
+Route::put('/missions/update', [MissionController::class, 'update'])->name('missions.update');
+Route::get('/missions/waiting', [MissionController::class, 'showWaiting'])->name('missions.waiting');
+
+Route::get('/missions/waiting', [MissionController::class, 'showWaiting'])->name('missions.waiting');
+Route::post('/missions/change-status', [MissionController::class, 'changeStatus'])->name('missions.changeStatus');
+Route::post('/missions/{id}/cancel', [MissionController::class, 'cancel']);
+
+Route::get('/missions/lookup', [MissionController::class, 'showLookupForm'])->name('missions.lookup.form');
+Route::post('/missions/lookup', [MissionController::class, 'performLookup'])->name('missions.lookup.submit');
+
+Route::get('/missions/priority', [MissionController::class, 'priority'])->name('missions.priority');
+Route::get('/missions/unique-destinations', [MissionController::class, 'getUniqueDestinations'])->name('missions.unique-destinations');
+Route::post('/missions/car-priority', [MissionController::class, 'getCarPriority'])->name('missions.car-priority');
+Route::post('/permits/check-expired', [PermitController::class, 'checkExpired'])
+    ->name('permits.check-expired')
+    ->middleware('auth');
+Route::post('/inspections/check-expired', [CarInspectionController::class, 'checkAndUpdateExpiredInspections'])->name('inspections.check-expired');
+Route::get('/cars-needing-inspection', [App\Http\Controllers\CarInspectionController::class, 'carsNeedingInspection'])
+->name('cars.needingInspection');
+Route::get('/permits/status', [App\Http\Controllers\PermitController::class, 'status'])->name('permits.status');
+Route::get('/home', function () {
+    return view('home');
+})->name('home');

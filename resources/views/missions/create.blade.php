@@ -24,6 +24,16 @@
             <h2 class="text-2xl font-bold">{{ Auth::user()->name }} {{ Auth::user()->last_name }}</h2>
             <p class="text-lg mt-6 mb-6">به سامانه مدیریت خودرو های استیجاری واحد چشمه خوش خوش آمدید.</p>
         </div>
+        <a href="{{ route('home') }}"
+            class="absolute bottom-4 left-4 bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg shadow-sm transition-all duration-300 text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 22V12h6v10" />
+            </svg>
+            بازگشت به خانه
+        </a>
     </header>
 
     <!-- Main -->
@@ -121,7 +131,7 @@
                     <select id="status" name="status_type"
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:ring">
                         <option value="">انتخاب کنید...</option>
-                        <option value="ٌwait">در انتظار</option>
+                        <option value="wait">در انتظار</option>
                         <option value="inprogress">در جریان</option>
                         <option value="finish">خاتمه یافته</option>
                     </select>

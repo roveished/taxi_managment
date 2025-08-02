@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,37 +17,58 @@
         }
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         function confirmSubmit(event) {
-            event.preventDefault();  
-        
-           
-            let result = confirm("آیا مطمئن هستید که می‌خواهید وضعیت حضور را ثبت کنید؟");
-        
-            if (result) {
-                event.target.submit();
-            }
-           
-            return false; 
+            event.preventDefault(); // جلوگیری از ارسال فرم به صورت پیش‌فرض
+
+            Swal.fire({
+                title: 'آیا مطمئن هستید که می‌خواهید وضعیت حضور را ثبت کنید؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، ثبت کن',
+                cancelButtonText: 'خیر، منصرف شدم',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit(); // اگر کاربر تأیید کرد، فرم ارسال شود
+                }
+            });
+
+            return false; // جلوگیری از رفتار پیش‌فرض فرم
         }
-        </script>
-        
+    </script>
+
+
 </head>
+
 <body class="bg-gray-100 min-h-screen flex flex-col">
     <header class="bg-blue-900 text-white py-6 text-center text-2xl font-bold">
         لیست خودروهای ثبت شده
+
+        <a href="{{ route('home') }}"
+            class="absolute bottom-4 left-4 bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg shadow-sm transition-all duration-300 text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 22V12h6v10" />
+            </svg>
+            بازگشت به خانه
+        </a>
     </header>
 
     <main class="p-6 flex-grow">
         @if ($errors->any())
-    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
-        <ul class="list-disc list-inside">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <form action="{{ route('car_working.store') }}" method="POST" onsubmit="return confirmSubmit(event)">
             @csrf
@@ -79,22 +101,21 @@
                                             <option value="absent">غیبت</option>
                                             <option value="leave">مرخصی</option>
                                         </select>
-                                        <input type="number" name="hours[{{ $route->id }}]"
-                                               value="24" min="1"
-                                               class="border rounded-2xl p-1 w-20" />
+                                        <input type="number" name="hours[{{ $route->id }}]" value="24"
+                                            min="1" class="border rounded-2xl p-1 w-20" />
                                     </div>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        <input type="text" name="descriptions[{{ $route->id }}]" placeholder="توضیحات"
-                                               class="border rounded-2xl p-1 w-full text-center" />
-                                    </td>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        <input type="date" name="dates[{{ $route->id }}]"
-                                               value="{{ \Carbon\Carbon::now()->toDateString() }}"
-                                               class="border rounded-2xl p-1 w-full" />
-                                    </td>
-                                    
+                                <td class="py-2 px-4 border-b text-center">
+                                    <input type="text" name="descriptions[{{ $route->id }}]" placeholder="توضیحات"
+                                        class="border rounded-2xl p-1 w-full text-center" />
                                 </td>
-                                
+                                <td class="py-2 px-4 border-b text-center">
+                                    <input type="date" name="dates[{{ $route->id }}]"
+                                        value="{{ \Carbon\Carbon::now()->toDateString() }}"
+                                        class="border rounded-2xl p-1 w-full" />
+                                </td>
+
+                                </td>
+
                             </tr>
                         @empty
                             <tr>
@@ -105,8 +126,7 @@
                 </table>
             </div>
             <div class="text-center mt-6">
-                <button type="submit"
-                        class="bg-blue-700 text-white py-2 px-6 rounded hover:bg-blue-800 transition">
+                <button type="submit" class="bg-blue-700 text-white py-2 px-6 rounded hover:bg-blue-800 transition">
                     ذخیره وضعیت حضور
                 </button>
             </div>
@@ -117,4 +137,26 @@
         © 2025 شرکت نفت و گاز غرب - واحد چشمه خوش
     </footer>
 </body>
+@if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'عملیات موفق',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'باشه'
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'خطا',
+            text: '{{ session('error') }}',
+            confirmButtonText: 'باشه'
+        });
+    </script>
+@endif
+
 </html>

@@ -23,22 +23,24 @@ class Mission extends Model
         'breakfasts_count',
         'lounch_count',
         'dinner_count',
+        'sleep_count',
+        'canceled',
     ];
 
-   
+
     public function car()
     {
         return $this->belongsTo(Car::class);
     }
 
-   
+
     public function driver()
     {
         return $this->belongsTo(Driver::class);
     }
     public function destinations()
-{
-    return $this->belongsToMany(Destination::class, 'destination_mission', 'mission_id', 'destinations_id');
-}
+    {
+        return $this->belongsToMany(Destination::class, 'destination_mission', 'mission_id', 'destinations_id');
+    }
 
 }

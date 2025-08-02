@@ -12,7 +12,6 @@ use Carbon\Carbon;
 
 class CarController extends Controller
 {
-    
     public function create()
     {
         $drivers = Driver::all();
@@ -42,7 +41,6 @@ class CarController extends Controller
         $full_plate = $validated['car_plate_part1'] .
                       $validated['car_plate_letter'] .
                       $validated['car_plate_part2'] .
-
                       $validated['car_plate_part3'];
 
 
@@ -79,19 +77,31 @@ class CarController extends Controller
     {
 
         $destinationName = $request->query('destination');
-        Log::info('پارامتر destination دریافت شد: ' . $destinationName);
+        //Log::info('پارامتر destination دریافت شد: ' . $destinationName);
         $destinations = Destination::where('destination', $destinationName)->get();
-        Log::info('تعداد مقصدهای یافت شده:', ['count' => $destinations->count(), 'destination' => $destinationName]);
+        //  Log::info('تعداد مقصدهای یافت شده:', ['count' => $destinations->count(), 'destination' => $destinationName]);
         if ($destinations->isEmpty()) {
             return response()->json(['error' => 'مقصدی یافت نشد.'], 404);
         }
 
         $destinationIds = $destinations->pluck('id');
+        $destinationIds = $destinations->pluck('id');
+        // Log::info('📌 لیست destination IDs:', ['ids' => $destinationIds->toArray()]);
 
+        /* $cars = $type === 'vp'
+             ? Car::whereIn('car_type', ['vip', 'passenger'])->get()
+             : Car::where('car_type', $type)->get();*/
         $cars = $type === 'vp'
-            ? Car::whereIn('car_type', ['vip', 'passenger'])->get()
-            : Car::where('car_type', $type)->get();
+    ? Car::whereIn('car_type', ['vip', 'passenger'])->get()
+    : (
+        $type === 'all'
+        ? Car::with('driver')->get()
+        : Car::with('driver')->where('car_type', $type)->get()
+    );
 
+        /* Log::info('🚘 لیست پلاک خودروهای فیلترشده:', [
+             'plates' => $cars->pluck('car_plate')->toArray()
+         ]);*/
         $carPriorityList = [];
 
         foreach ($cars as $car) {
@@ -102,38 +112,65 @@ class CarController extends Controller
                 ->orderByDesc('departure_date')
                 ->orderByDesc('departure_time')
                 ->get();
-
+            /* Log::info("📄 مأموریت‌های خودرو {$car->car_plate} با مقصدهای مشخص:", $missions->map(function ($mission) {
+                 return [
+                     'id' => $mission->id,
+                     'departure_date' => $mission->departure_date,
+                     'departure_time' => $mission->departure_time,
+                 ];
+             })->toArray());*/
             $lastDateTime = Carbon::createFromFormat('Y-m-d H:i:s', '1900-01-01 00:00:00');
 
             if ($missions->isNotEmpty()) {
                 $lastMission = $missions->first();
+                /*  Log::info("📌 اولین مأموریت (جدیدترین) برای خودرو {$car->car_plate}:", [
+                      'mission_id' => $lastMission->id,
+                      'departure_date' => $lastMission->departure_date,
+                      'departure_time' => $lastMission->departure_time,
+                  ]);*/
 
-              
                 $date = $lastMission->departure_date;
                 $time = $lastMission->departure_time;
 
                 $lastDateTime = Carbon::parse("$date $time");
+                /*Log::info("🕒 آخرین مأموریت خودرو {$car->car_plate}: ", [
+                    'mission_id' => $lastMission->id,
+                    'departure_date' => $date,
+                    'departure_time' => $time,
+                    'datetime' => $lastDateTime->toDateTimeString(),
+                    'timestamp' => $lastDateTime->timestamp
+                ]);*/
             }
+
 
             $carPriorityList[] = [
                 'id' => $car->id,
                 'car_plate' => $car->car_plate,
                 'last_mission_to_destination' => $lastDateTime->toDateTimeString(),
+                'driver' => optional($car->driver)->name . ' ' . optional($car->driver)->last_name,
+             'owner_name' => $car->owner_name,
+             'owner_lsetname' => $car->owner_lsetname,
                 'timestamp' => $lastDateTime->timestamp, // برای مرتب‌سازی بهتر
             ];
+
+            /*Log::info("📊 ثبت خودرو در لیست اولویت:", [
+                'car_plate' => $car->car_plate,
+                'last_mission_to_destination' => $lastDateTime->toDateTimeString(),
+                'timestamp' => $lastDateTime->timestamp,
+            ]);*/
         }
 
-     
+
         usort($carPriorityList, function ($a, $b) {
             return $a['timestamp'] <=> $b['timestamp'];
         });
 
-        
+
         $carPriorityList = array_map(function ($item) {
             unset($item['timestamp']);
             return $item;
         }, $carPriorityList);
-        Log::info('🚗 Car priority list: ', $carPriorityList);
+        //  Log::info('🚗 Car priority list: ', $carPriorityList);
         return response()->json($carPriorityList);
     }
 
@@ -202,6 +239,9 @@ class CarController extends Controller
             'owner' => $car->owner_name . ' ' . $car->owner_lsetname
         ]);
     }
+
+
+
 
 
 }

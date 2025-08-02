@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('car_id')->references('id')->on('cars');
             $table->unsignedBigInteger('driver_id');
             $table->foreign('driver_id')->references('id')->on('drivers');
-            $table->enum('status',['ٌwait','inprogress ','finish']);
+            $table->enum('status',['wait','inprogress','finish']);
             $table->integer('distonce');
             $table->integer('breakfasts_count');
             $table->integer('lounch_count');

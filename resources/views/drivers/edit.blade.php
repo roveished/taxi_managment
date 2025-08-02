@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ویرایش اطلاعات راننده</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
     <!-- Header -->
@@ -21,33 +23,20 @@
             </h2>
             <p class="text-lg mt-6 mb-6">به سامانه مدیریت خودروهای استیجاری واحد چشمه خوش خوش آمدید.</p>
         </div>
+        <a href="{{ route('home') }}"
+            class="absolute bottom-4 left-4 bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg shadow-sm transition-all duration-300 text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 22V12h6v10" />
+            </svg>
+            بازگشت به خانه
+        </a>
     </header>
 
     <main class="flex-grow flex items-center justify-center p-6">
         <div class="bg-white shadow-lg rounded-2xl w-full max-w-md p-8">
-            {{-- پیام‌ها --}}
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded relative mb-4">
-                    <strong>خطا در اعتبارسنجی:</strong>
-                    <ul class="mt-2 list-disc list-inside text-sm">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
 
             {{-- فرم جستجوی راننده --}}
             <form action="{{ route('drivers.search') }}" method="GET" class="space-y-4">
@@ -55,12 +44,12 @@
                 <div>
                     <label class="block text-gray-700">کد ملی راننده:</label>
                     <input type="text" name="national_id" placeholder="کد ملی را وارد کنید"
-                           class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           required>
+                        class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
                 </div>
                 <div class="pt-2">
                     <button type="submit"
-                            class="w-full bg-blue-700 hover:bg-blue-800 text-white py-2 px-4 rounded-md transition">
+                        class="w-full bg-blue-700 hover:bg-blue-800 text-white py-2 px-4 rounded-md transition">
                         جستجو
                     </button>
                 </div>
@@ -76,41 +65,44 @@
                     <div>
                         <label class="block text-gray-700">نام:</label>
                         <input type="text" name="name" value="{{ old('name', $driver->name) }}"
-                               class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-gray-700">نام خانوادگی:</label>
                         <input type="text" name="last_name" value="{{ old('last_name', $driver->last_name) }}"
-                               class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-gray-700">شماره تلفن همراه:</label>
                         <input type="text" name="phone_number" value="{{ old('phone_number', $driver->phone_number) }}"
-                               class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-gray-700">کد ملی:</label>
                         <input type="text" name="national_id" value="{{ old('national_id', $driver->national_id) }}"
-                               class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
+                            class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            readonly>
                     </div>
                     <div>
                         <label class="block text-gray-700">تاریخ تولد:</label>
-                        <input type="date" name="date_of_birth" 
-                               value="{{ old('date_of_birth', optional($driver->date_of_birth)->format('Y-m-d')) }}"
-                               class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="date" name="date_of_birth"
+                            value="{{ old('date_of_birth', optional($driver->date_of_birth)->format('Y-m-d')) }}"
+                            class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
-                    
+
                     <div>
                         <label class="block text-gray-700">وضعیت:</label>
                         <select name="status"
-                                class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="active" {{ old('status', $driver->status) == 'active' ? 'selected' : '' }}>فعال</option>
-                            <option value="inactive" {{ old('status', $driver->status) == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
+                            class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="active" {{ old('status', $driver->status) == 'active' ? 'selected' : '' }}>فعال
+                            </option>
+                            <option value="inactive" {{ old('status', $driver->status) == 'inactive' ? 'selected' : '' }}>
+                                غیرفعال</option>
                         </select>
                     </div>
                     <div class="pt-4">
                         <button type="submit"
-                                class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition">
+                            class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition">
                             ویرایش راننده
                         </button>
                     </div>
@@ -122,5 +114,38 @@
     <footer class="bg-blue-900 text-white text-center py-4 mt-auto">
         <p>© 2025 شرکت نفت و گاز غرب - واحد چشمه خوش</p>
     </footer>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'موفقیت',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'باشه'
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'فهمیدم'
+            });
+        @endif
+
+        @if ($errors->any())
+            let errorMessages = @json($errors->all());
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا در فرم',
+                html: `<ul style="text-align:right;direction:rtl;">${errorMessages.map(msg => `<li>${msg}</li>`).join('')}</ul>`,
+                confirmButtonText: 'متوجه شدم'
+            });
+        @endif
+    </script>
+
 </body>
+
 </html>

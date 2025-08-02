@@ -15,6 +15,7 @@ class DestinationMission extends Model
         'mission_id',
         'destinations_id',
         'order',
+        'canceled',
     ];
 
     // روابط
