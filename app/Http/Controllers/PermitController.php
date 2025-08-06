@@ -22,7 +22,10 @@ class PermitController extends Controller
             'issue_date' => 'required|date',
             'expiration_date' => 'required|date|after_or_equal:issue_date',
             'status' => 'required|in:valid,invalid',
+        ], [
+            'expiration_date.after_or_equal' => 'تاریخ انقضا باید بعد از تاریخ صدور باشد.',
         ]);
+
 
         Permit::create($validated);
 
@@ -59,11 +62,17 @@ class PermitController extends Controller
             'issue_date' => 'required|date',
             'expiration_date' => 'required|date|after_or_equal:issue_date',
             'status' => 'required|in:valid,invalid',
+        ], [
+            'expiration_date.after_or_equal' => 'تاریخ انقضا باید بعد از تاریخ صدور باشد.',
         ]);
 
         $permit->update($request->only('issue_date', 'expiration_date', 'status'));
+        if ($request->ajax()) {
+            return response()->json(['message' => 'پرمیت با موفقیت بروزرسانی شد.']);
+        } else {
 
-        return redirect()->route('permits.edit')->with('success', 'وضعیت پرمیت با موفقیت به‌روزرسانی شد.');
+            return redirect()->route('permits.edit')->with('success', 'وضعیت پرمیت با موفقیت به‌روزرسانی شد.');
+        }
     }
 
     public function checkExpired(Request $request)
@@ -91,12 +100,12 @@ class PermitController extends Controller
         return response()->json($drivers);
     }
     public function status()
-{
-    $permits = Permit::with('driver')->get();
+    {
+        $permits = Permit::with('driver')->get();
 
-    return view('permits.status', [
-        'permits' => $permits,
-    ]);
-}
+        return view('permits.status', [
+            'permits' => $permits,
+        ]);
+    }
 
 }

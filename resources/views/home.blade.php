@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+
 
     <style>
         .dropdown-menu {
@@ -43,6 +43,7 @@
         </div>
 
 
+
     </header>
 
 
@@ -57,17 +58,22 @@
                 <ul
                     class="absolute dropdown-menu bg-white text-black mt-2 rounded shadow-md min-w-max z-10 origin-top transform scale-y-0 opacity-0 group-hover:scale-y-100 group-hover:opacity-100">
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('missions.create') }}">جدید</a></li>
+                            href="{{ route('missions.create') }}"class="text-gray-700 hover:text-blue-600">جدید</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('missions.inprogress') }}">در جریان</a></li>
+                            href="{{ route('missions.inprogress') }}"class="text-gray-700 hover:text-blue-600">در
+                            جریان</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('missions.finished') }}">خاتمه یافته</a></li>
+                            href="{{ route('missions.finished') }}"class="text-gray-700 hover:text-blue-600">خاتمه
+                            یافته</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('missions.waiting') }}">در انتظار</a></li>
+                            href="{{ route('missions.waiting') }}"class="text-gray-700 hover:text-blue-600">در
+                            انتظار</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('missions.lookup.form') }}">جستجو</a></li>
+                            href="{{ route('missions.lookup.form') }}"class="text-gray-700 hover:text-blue-600">جستجو</a>
+                    </li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('missions.priority') }}">نوبت</a></li>
+                            href="{{ route('missions.priority') }}"class="text-gray-700 hover:text-blue-600">نوبت</a>
+                    </li>
 
                 </ul>
             </li>
@@ -77,19 +83,34 @@
                 <ul
                     class="absolute dropdown-menu bg-white text-black mt-2 rounded shadow-md min-w-max z-10 origin-top transform scale-y-0 opacity-0 group-hover:scale-y-100 group-hover:opacity-100">
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">در ماموریت</li>
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('cars.attendance') }}">حضور و غیاب</a></li>
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200">آماده کار</li>
+                    <li
+                        class="px-4 py-2 hover:bg-gray-100 transition duration-200"class="text-gray-700 hover:text-blue-600">
+                        <a href="{{ route('cars.attendance') }}">حضور و غیاب</a>
+                    </li>
+                    <li
+                        class="px-4 py-2 hover:bg-gray-100 transition duration-200"class="text-gray-700 hover:text-blue-600">
+                        <a href="{{ route('cars.active') }}" class="text-gray-700 hover:text-blue-600">آماده کار</a>
+                    </li>
 
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('cars.create') }}">افزودن خودرو</a></li>
+                            href="{{ route('cars.create') }}"class="text-gray-700 hover:text-blue-600">افزودن خودرو</a>
+                    </li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('cars.show') }}">نمایش اطلاعات خودروها</a></li>
+                            href="{{ route('cars.show') }}"class="text-gray-700 hover:text-blue-600">نمایش اطلاعات
+                            خودروها</a></li>
+                    <li
+                        class="px-4 py-2 hover:bg-gray-100 transition duration-200"class="text-gray-700 hover:text-blue-600">
+                        <a href="{{ route('cars.attendance.edit') }}"class="text-gray-700 hover:text-blue-600">ویرایش
+                            وضعیت حضور</a>
+                    </li>
+                    <li
+                        class="px-4 py-2 hover:bg-gray-100 transition duration-200"class="text-gray-700 hover:text-blue-600">
+                        <a href="{{ route('cars.needingInspection') }}"class="text-gray-700 hover:text-blue-600">خودروهای
+                            نیازمند بازرسی</a>
+                    </li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('cars.attendance.edit') }}">ویرایش وضعیت حضور</a> </li>
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('cars.needingInspection') }}">خودروهای نیازمند بازرسی</a> </li>
-
+                            href="{{ route('driver.change.form') }}"class="text-gray-700 hover:text-blue-600">تغییر
+                            راننده</a> </li>
                 </ul>
             </li>
             <!-- مسیر -->
@@ -97,12 +118,16 @@
                 <span class="hover:text-yellow-600 transition-colors duration-300">مسیر</span>
                 <ul
                     class="absolute dropdown-menu bg-white text-black mt-2 rounded shadow-md min-w-max z-10 origin-top transform scale-y-0 opacity-0 group-hover:scale-y-100 group-hover:opacity-100">
+                    <li
+                        class="px-4 py-2 hover:bg-gray-100 transition duration-200"class="text-gray-700 hover:text-blue-600">
+                        <a href="{{ route('destination.create') }}"class="text-gray-700 hover:text-blue-600">افزودن
+                            مسیر</a>
+                    </li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('destination.create') }}">افزودن مسیر</a></li>
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('destination.show') }}">نمایش/ویرایش</a></li>
+                            href="{{ route('destination.show') }}"class="text-gray-700 hover:text-blue-600">نمایش/ویرایش</a>
+                    </li>
                     <!-- <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('destination.edit') }}">ویرایش مسیر</a></li>-->
+                            href="{{ route('destination.edit') }}"class="text-gray-700 hover:text-blue-600">ویرایش مسیر</a></li>-->
                 </ul>
             </li>
             <!--رانندگان -->
@@ -110,16 +135,23 @@
                 <span class="hover:text-yellow-600 transition-colors duration-300">رانندگان</span>
                 <ul
                     class="absolute dropdown-menu bg-white text-black mt-2 rounded shadow-md min-w-max z-10 origin-top transform scale-y-0 opacity-0 group-hover:scale-y-100 group-hover:opacity-100">
+                    <li
+                        class="px-4 py-2 hover:bg-gray-100 transition duration-200"class="text-gray-700 hover:text-blue-600">
+                        <a href="{{ route('drivers.create') }}"class="text-gray-700 hover:text-blue-600">افزودن
+                            راننده</a>
+                    </li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('drivers.create') }}">افزودن راننده</a></li>
+                            href="{{ route('drivers.active') }}"class="text-gray-700 hover:text-blue-600">رانندگان
+                            فعال</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('drivers.active') }}">رانندگان فعال</a></li>
-                    <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"> <a
-                            href="{{ route('drivers.inactive') }}">رانندگان غیر فعال</a></li>
+                            href="{{ route('drivers.inactive') }}"class="text-gray-700 hover:text-blue-600">رانندگان
+                            غیر فعال</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('drivers.search') }}">ویرایش اطلاعات</a></li>
+                            href="{{ route('drivers.search') }}"class="text-gray-700 hover:text-blue-600">ویرایش
+                            اطلاعات</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
-                            href="{{ route('permits.edit') }}">ویرایش وضعیت پرمیت</a></li>
+                            href="{{ route('permits.edit') }}" class="text-gray-700 hover:text-blue-600">ویرایش وضعیت
+                            پرمیت</a></li>
                     <li class="px-4 py-2 hover:bg-gray-100 transition duration-200"><a
                             href="{{ route('permits.status') }}" class="text-gray-700 hover:text-blue-600">وضعیت پرمیت
                             رانندگان</a>
@@ -228,14 +260,14 @@
                                                                                     </thead>
                                                                                          <tbody>
                                                                                  ${data.map((driver, index) => `
-                                                                                                                                        <tr class="hover:bg-gray-50">
-                                                                                                                                        <td class="py-2 px-4 border">${index + 1}</td>
-                                                                                                                                                                <td class="py-2 px-4 border">${driver.name}</td>
-                                                                                                                                       <td class="py-2 px-4 border">${driver.last_name}</td>
-                                                                                                                                            <td class="py-2 px-4 border">${driver.national_id}</td>
-                                                                                                                                                                <td class="py-2 px-4 border">${driver.phone_number}</td>
-                                                                                                                            </tr>
-                                                                                                                                             `).join('')}
+                                                                                                                                                                        <tr class="hover:bg-gray-50">
+                                                                                                                                                                        <td class="py-2 px-4 border">${index + 1}</td>
+                                                                                                                                                                                                <td class="py-2 px-4 border">${driver.name}</td>
+                                                                                                                                                                       <td class="py-2 px-4 border">${driver.last_name}</td>
+                                                                                                                                                                            <td class="py-2 px-4 border">${driver.national_id}</td>
+                                                                                                                                                                                                <td class="py-2 px-4 border">${driver.phone_number}</td>
+                                                                                                                                                            </tr>
+                                                                                                                                                                             `).join('')}
                                                                                                    </tbody>
                                                                                             `;
 
@@ -325,13 +357,13 @@
                             </thead>
                             <tbody>
                                 ${data.map((car, index) => `
-                                                                    <tr class="hover:bg-gray-50">
-                                                                        <td class="py-2 px-4 border">${index + 1}</td>
-                                                                        <td class="py-2 px-4 border">${car.car_plate}</td>
-                                                                        <td class="py-2 px-4 border">${car.car_model}</td>
-                                                                        <td class="py-2 px-4 border">${car.status}</td>
-                                                                    </tr>
-                                                                `).join('')}
+                                                                                                    <tr class="hover:bg-gray-50">
+                                                                                                        <td class="py-2 px-4 border">${index + 1}</td>
+                                                                                                        <td class="py-2 px-4 border">${car.car_plate}</td>
+                                                                                                        <td class="py-2 px-4 border">${car.car_model}</td>
+                                                                                                        <td class="py-2 px-4 border">${car.status}</td>
+                                                                                                    </tr>
+                                                                                                `).join('')}
                             </tbody>
                         `;
 
@@ -365,25 +397,8 @@
     <footer class="bg-blue-900 text-white text-center py-4 mt-auto">
         <p>© 2025 شرکت نفت و گاز غرب - واحد چشمه خوش</p>
     </footer>
+
 </body>
-<script>
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        Swal.fire({
-            title: 'آیا مطمئن هستید؟',
-            text: "از حساب کاربری خارج خواهید شد.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'بله، خروج',
-            cancelButtonText: 'لغو'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // ارسال فرم خروج
-                document.getElementById('logout-form').submit();
-            }
-        });
-    });
-</script>
+
 
 </html>

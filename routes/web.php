@@ -103,3 +103,10 @@ Route::get('/permits/status', [App\Http\Controllers\PermitController::class, 'st
 Route::get('/home', function () {
     return view('home');
 })->name('home');
+
+
+Route::get('/change-driver', [App\Http\Controllers\DriverController::class, 'showChangeDriverForm'])->name('driver.change.form');
+Route::get('/search-car', [App\Http\Controllers\DriverController::class, 'searchByPlate'])->name('driver.search.car');
+Route::post('/change-driver', [App\Http\Controllers\DriverController::class, 'updateDriver'])->name('driver.update');
+Route::put('/permits/{permit}', [PermitController::class, 'update'])->name('permits.update');
+Route::get('/cars/active', [App\Http\Controllers\CarController::class, 'active'])->name('cars.active');

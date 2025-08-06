@@ -113,6 +113,10 @@ class DestinationController extends Controller
           'origin' => 'required|string|max:255',
           'destination' => 'required|string|max:255',
           'distonce' => 'required|string|max:15',
+        ], [
+            'origin.required' => 'فیلد مبدا الزامی است.',
+    'destination.required' => 'فیلد مقصد الزامی است.',
+    'distonce.required' => 'فیلد فاصله الزامی است.',
         ]);
 
         if ($validator->fails()) {
@@ -156,10 +160,10 @@ class DestinationController extends Controller
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json([
-                  'success' => false,
-                  'message' => 'خطا در ثبت مسیر!',
-                  'error' => $e->getMessage()
-                ], 500);
+                    'success' => false,
+                    'message' => 'اعتبارسنجی با خطا مواجه شد.',
+                    'errors' => $validator->errors()
+                ], 422);
             }
 
             return redirect()->back()->with('error', 'خطا در ثبت مسیر!');
@@ -204,6 +208,11 @@ class DestinationController extends Controller
             'origin' => 'required|string|max:255',
             'destination' => 'required|string|max:255',
             'distonce' => 'required|integer|min:0',
+        ], [
+            'origin.required' => 'فیلد مبدا الزامی است.',
+    'destination.required' => 'فیلد مقصد الزامی است.',
+    'distonce.required' => 'فیلد فاصله الزامی است.',
+
         ]);
 
         $route = Destination::findOrFail($id);

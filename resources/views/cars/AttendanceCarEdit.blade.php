@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ویرایش وضعیت حضور خودروها</title>
+    <title>لیست مسیرها</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
-    <header class="bg-blue-900 text-white py-6 text-center text-2xl font-bold">
-        ویرایش وضعیت حضور خودروها
 
+    <!-- Header -->
+    <header class="bg-blue-900 text-white relative">
+        <div class="flex justify-between items-center py-10 px-4">
+            <img src="{{ asset('main-logo.png') }}" alt="Logo" class="w-auto h-auto" />
+        </div>
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center">
+            <h2 class="text-2xl font-bold">{{ Auth::user()->name }} {{ Auth::user()->last_name }}</h2>
+            <p class="text-lg mt-6 mb-6">به سامانه مدیریت خودرو های استیجاری واحد چشمه خوش خوش آمدید.</p>
+        </div>
         <a href="{{ route('home') }}"
             class="absolute bottom-4 left-4 bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg shadow-sm transition-all duration-300 text-sm flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -36,18 +45,6 @@
             </button>
         </form>
 
-        <!-- پیام -->
-        @if (session('success'))
-            <div class="mb-4 p-4 bg-green-100 text-green-800 rounded text-center">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (isset($message))
-            <div class="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded text-center">
-                {{ $message }}
-            </div>
-        @endif
 
         <!-- جدول رکوردها -->
         @if (isset($records) && $records->count() > 0)
@@ -126,6 +123,35 @@
     <footer class="bg-blue-900 text-white text-center py-4 mt-auto">
         © 2025 شرکت نفت و گاز غرب - واحد چشمه خوش
     </footer>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'موفقیت',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'باشه'
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'باشه'
+            });
+        @endif
+
+        @if (isset($message))
+            Swal.fire({
+                icon: 'warning',
+                title: 'پیام',
+                text: '{{ $message }}',
+                confirmButtonText: 'باشه'
+            });
+        @endif
+    </script>
+
 </body>
 
 </html>

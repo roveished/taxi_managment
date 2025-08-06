@@ -49,7 +49,7 @@
                             <th class="px-4 py-3">کد ملی</th>
                             <th class="px-4 py-3">تاریخ صدور</th>
                             <th class="px-4 py-3">تاریخ انقضا</th>
-                            <th class="px-4 py-3">وضعیت</th>
+                            <th class="px-4 py-3">وضغیت / ویرایش</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,16 +61,20 @@
                                 <td class="px-4 py-2 text-gray-800">{{ $permit->driver->last_name }}</td>
                                 <td class="px-4 py-2 text-gray-800">{{ $permit->driver->national_id }}</td>
                                 <td class="px-4 py-2 text-gray-800">
-                                    {{ jdate($permit->issue_date)->format('Y/m/d') }}</td>
+                                    {{ \Carbon\Carbon::parse($permit->issue_date)->format('Y-m-d') }}</td>
                                 <td class="px-4 py-2 text-gray-800">
-                                    {{ jdate($permit->expiration_date)->format('Y/m/d') }}</td>
+                                    {{ \Carbon\Carbon::parse($permit->expiration_date)->format('Y-m-d') }}</td>
                                 <td class="px-4 py-2">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-white text-xs font-semibold
-                                            {{ $permit->status === 'valid' ? 'bg-green-600' : 'bg-red-600' }}">
+                                    <button
+                                        class="px-6 py-2 rounded-full text-white text-xs font-semibold
+                                                   {{ $permit->status === 'valid' ? 'bg-green-600' : 'bg-red-600' }}
+                                                   hover:opacity-90 transition-all"
+                                        data-permit='@json($permit)'
+                                        data-driver='@json($permit->driver)' onclick="openPermitModal(this)">
                                         {{ $permit->status === 'valid' ? 'معتبر' : 'نامعتبر' }}
-                                    </span>
+                                    </button>
                                 </td>
+
                             </tr>
                         @endforeach
                     </tbody>
@@ -80,12 +84,63 @@
 
         </div>
     </main>
+    <!-- Permit Modal -->
+
+    <div id="permitModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
+
+            <h3 class="text-xl font-bold mb-4 text-blue-800 text-center">ویرایش پرمیت راننده</h3>
+
+            <div class="space-y-2">
+                <p><strong>نام:</strong> <span id="driverName"></span></p>
+                <p><strong>نام خانوادگی:</strong> <span id="driverLastName"></span></p>
+                <p><strong>کد ملی:</strong> <span id="driverNationalId"></span></p>
+                <p><strong>شماره تماس:</strong> <span id="driverPhoneNumber"></span></p>
+            </div>
+
+            <form id="permitForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-1">تاریخ صدور</label>
+                    <input type="date" name="issue_date" id="issueDate" class="w-full border rounded-lg px-3 py-2">
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-1">تاریخ انقضا</label>
+                    <input type="date" name="expiration_date" id="expirationDate"
+                        class="w-full border rounded-lg px-3 py-2">
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-1">وضعیت</label>
+                    <select name="status" id="status" class="w-full border rounded-lg px-3 py-2">
+                        <option value="valid">معتبر</option>
+                        <option value="invalid">نامعتبر</option>
+                    </select>
+                </div>
+
+                <div class="mt-6 grid grid-cols-2 gap-4">
+                    <button type="submit" class="bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">
+                        ثبت تغییرات
+                    </button>
+
+                    <button type="button" onclick="closePermitModal()"
+                        class="bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400 transition">
+                        بستن
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
 
     <!-- Footer -->
     <footer class="bg-blue-900 text-white text-center py-4 mt-auto">
         <p>© 2025 شرکت نفت و گاز غرب - واحد چشمه خوش</p>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         @if (session('success'))
             Swal.fire({
@@ -115,6 +170,80 @@
             });
         @endif
     </script>
+    <script>
+        function openPermitModal(button) {
+            const permit = JSON.parse(button.getAttribute('data-permit'));
+            const driver = JSON.parse(button.getAttribute('data-driver'));
+
+            // Set values in modal
+            document.getElementById('driverName').textContent = driver.name;
+            document.getElementById('driverLastName').textContent = driver.last_name;
+            document.getElementById('driverNationalId').textContent = driver.national_id;
+            document.getElementById('driverPhoneNumber').textContent = driver.phone_number;
+
+            document.getElementById('issueDate').value = permit.issue_date;
+            document.getElementById('expirationDate').value = permit.expiration_date;
+            document.getElementById('status').value = permit.status;
+
+            // Set form action dynamically
+            const form = document.getElementById('permitForm');
+            form.action = `/permits/${permit.id}`;
+
+            // Show modal
+            document.getElementById('permitModal').classList.remove('hidden');
+        }
+
+        function closePermitModal() {
+            document.getElementById('permitModal').classList.add('hidden');
+        }
+    </script>
+    <script>
+        document.getElementById('permitForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // جلوگیری از سابمیت معمولی
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const action = form.action;
+
+            fetch(action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('خطا در ارسال اطلاعات');
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'موفقیت',
+                        text: 'پرمیت با موفقیت بروزرسانی شد',
+                        confirmButtonText: 'باشه'
+                    });
+
+                    closePermitModal();
+                    // اختیاری: رفرش جدول یا صفحه (در صورت نیاز)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطا',
+                        text: error.message,
+                        confirmButtonText: 'باشه'
+                    });
+                });
+        });
+    </script>
+
+
 
 </body>
 

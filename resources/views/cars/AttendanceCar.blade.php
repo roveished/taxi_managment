@@ -4,49 +4,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>لیست خودروها</title>
+    <title>لیست مسیرها</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        function toggleInput(selectElement, id) {
-            const input = document.getElementById('hours-input-' + id);
-            if (selectElement.value === 'عدم کارکرد' || selectElement.value === 'غیبت') {
-                input.classList.remove('hidden');
-            } else {
-                input.classList.add('hidden');
-            }
-        }
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        function confirmSubmit(event) {
-            event.preventDefault(); // جلوگیری از ارسال فرم به صورت پیش‌فرض
-
-            Swal.fire({
-                title: 'آیا مطمئن هستید که می‌خواهید وضعیت حضور را ثبت کنید؟',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'بله، ثبت کن',
-                cancelButtonText: 'خیر، منصرف شدم',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    event.target.submit(); // اگر کاربر تأیید کرد، فرم ارسال شود
-                }
-            });
-
-            return false; // جلوگیری از رفتار پیش‌فرض فرم
-        }
-    </script>
-
 
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
-    <header class="bg-blue-900 text-white py-6 text-center text-2xl font-bold">
-        لیست خودروهای ثبت شده
 
+    <!-- Header -->
+    <header class="bg-blue-900 text-white relative">
+        <div class="flex justify-between items-center py-10 px-4">
+            <img src="{{ asset('main-logo.png') }}" alt="Logo" class="w-auto h-auto" />
+        </div>
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center">
+            <h2 class="text-2xl font-bold">{{ Auth::user()->name }} {{ Auth::user()->last_name }}</h2>
+            <p class="text-lg mt-6 mb-6">به سامانه مدیریت خودرو های استیجاری واحد چشمه خوش خوش آمدید.</p>
+        </div>
         <a href="{{ route('home') }}"
             class="absolute bottom-4 left-4 bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-lg shadow-sm transition-all duration-300 text-sm flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -58,7 +32,6 @@
             بازگشت به خانه
         </a>
     </header>
-
     <main class="p-6 flex-grow">
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
@@ -105,8 +78,8 @@
                                             min="1" class="border rounded-2xl p-1 w-20" />
                                     </div>
                                 <td class="py-2 px-4 border-b text-center">
-                                    <input type="text" name="descriptions[{{ $route->id }}]" placeholder="توضیحات"
-                                        class="border rounded-2xl p-1 w-full text-center" />
+                                    <input type="text" name="descriptions[{{ $route->id }}]"
+                                        placeholder="توضیحات" class="border rounded-2xl p-1 w-full text-center" />
                                 </td>
                                 <td class="py-2 px-4 border-b text-center">
                                     <input type="date" name="dates[{{ $route->id }}]"
@@ -136,6 +109,40 @@
     <footer class="bg-blue-900 text-white text-center py-4 mt-auto">
         © 2025 شرکت نفت و گاز غرب - واحد چشمه خوش
     </footer>
+    <script>
+        function toggleInput(selectElement, id) {
+            const input = document.getElementById('hours-input-' + id);
+            if (selectElement.value === 'عدم کارکرد' || selectElement.value === 'غیبت') {
+                input.classList.remove('hidden');
+            } else {
+                input.classList.add('hidden');
+            }
+        }
+    </script>
+
+
+
+    <script>
+        function confirmSubmit(event) {
+            event.preventDefault(); // جلوگیری از ارسال فرم به صورت پیش‌فرض
+
+            Swal.fire({
+                title: 'آیا مطمئن هستید که می‌خواهید وضعیت حضور را ثبت کنید؟',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'بله، ثبت کن',
+                cancelButtonText: 'خیر، منصرف شدم',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit(); // اگر کاربر تأیید کرد، فرم ارسال شود
+                }
+            });
+
+            return false; // جلوگیری از رفتار پیش‌فرض فرم
+        }
+    </script>
+
 </body>
 @if (session('success'))
     <script>

@@ -167,6 +167,19 @@
         </script>
     @endif
 
+
+    @if (session('driver_error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'خطا',
+            text: @json(session('driver_error')),
+            confirmButtonText: 'باشه'
+        });
+    </script>
+@endif
+
+
 </body>
 
 </html>

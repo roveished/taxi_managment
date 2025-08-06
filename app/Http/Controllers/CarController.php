@@ -37,12 +37,17 @@ class CarController extends Controller
             'owner_nationl_id' => 'required|string|max:20',
         ]);
 
+        // بررسی اینکه آیا این راننده قبلاً به خودروی دیگری اختصاص داده شده؟
+        $existingCar = Car::where('driver_id', $validated['driver_id'])->first();
+        if ($existingCar) {
+            return redirect()->back()->withInput()->with('driver_error', 'این راننده قبلاً به خودروی دیگری اختصاص داده شده است.');
+        }
+
 
         $full_plate = $validated['car_plate_part1'] .
                       $validated['car_plate_letter'] .
                       $validated['car_plate_part2'] .
                       $validated['car_plate_part3'];
-
 
         Car::create([
             'car_plate' => $full_plate,
@@ -60,6 +65,7 @@ class CarController extends Controller
 
         return redirect()->route('cars.create')->with('success', 'خودرو با موفقیت ثبت شد.');
     }
+
 
     public function show()
     {
@@ -150,6 +156,7 @@ class CarController extends Controller
                 'driver' => optional($car->driver)->name . ' ' . optional($car->driver)->last_name,
              'owner_name' => $car->owner_name,
              'owner_lsetname' => $car->owner_lsetname,
+             'status' => $car->status,
                 'timestamp' => $lastDateTime->timestamp, // برای مرتب‌سازی بهتر
             ];
 
@@ -171,6 +178,7 @@ class CarController extends Controller
             return $item;
         }, $carPriorityList);
         //  Log::info('🚗 Car priority list: ', $carPriorityList);
+
         return response()->json($carPriorityList);
     }
 
@@ -240,6 +248,15 @@ class CarController extends Controller
         ]);
     }
 
+    public function active()
+    {
+        $cars = Car::with('driver') // بارگذاری رابطه راننده
+            ->where('status', 'active')
+            ->get();
+
+        Log::info('Active Cars:', ['cars' => $cars->toArray()]);
+        return view('cars.active', compact('cars'));
+    }
 
 
 

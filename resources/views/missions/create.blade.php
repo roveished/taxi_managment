@@ -9,6 +9,7 @@
 
     <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -148,10 +149,26 @@
                     </button>
                 </div>
                 @if (session('success'))
-                    <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
-                        {{ session('success') }}
-                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                title: 'موفقیت آمیز!',
+                                text: '{{ session('success') }}',
+                                icon: 'success',
+                                confirmButtonText: 'باشه',
+                                timer: 4000,
+                                timerProgressBar: true,
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                }
+                            });
+                        });
+                    </script>
                 @endif
+
 
 
             </form>
@@ -219,7 +236,9 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
- <script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
         // Flatpickr init
         flatpickr("#departure_time", {
             enableTime: true,
@@ -260,7 +279,7 @@
             const destinationText = destinationSelect.options[destinationSelect.selectedIndex].text;
 
             if (!originValue || !destinationValue) {
-                return alert('لطفاً مبدا و مقصد را انتخاب کنید.');
+                return Swal.fire('خطا', 'لطفاً مبدا و مقصد را انتخاب کنید.', 'warning');
             }
 
             // بررسی تکراری نبودن مسیر
@@ -271,7 +290,7 @@
                     return originInput && destInput && originInput.value === originValue && destInput.value ===
                         destinationValue;
                 });
-            if (exists) return alert('این مسیر قبلا اضافه شده است.');
+            if (exists) return Swal.fire('خطا', 'این مسیر قبلا اضافه شده است.', 'warning');
 
             const li = document.createElement('li');
             li.className = "flex justify-between items-center bg-gray-100 px-4 py-2 rounded";
@@ -304,7 +323,7 @@
             const destination = document.getElementById('modal_destination').value;
             const distonce = document.getElementById('modal_distance').value;
             if (!origin || !destination || !distonce) {
-                return alert('لطفاً تمام فیلدهای مسیر را پر کنید.');
+                return Swal.fire('خطا', 'لطفاً تمام فیلدهای مسیر را پر کنید.', 'warning');
             }
 
             try {
@@ -326,56 +345,22 @@
                 const result = await response.json();
                 console.log(result);
                 if (response.ok && result.success) {
-                    alert(result.message);
+                    Swal.fire('موفق', result.message, 'success');
                     modal.classList.add('hidden');
                     document.getElementById('modal_origin').value = '';
                     document.getElementById('modal_destination').value = '';
                     document.getElementById('modal_distance').value = '';
                     // در صورت نیاز لیست مبدا و مقصد دوباره بارگذاری شود
                 } else {
-                    alert(result.message || 'خطا در ثبت مسیر');
+                    Swal.fire('خطا', result.message || 'خطا در ثبت مسیر', 'error');
                 }
             } catch (error) {
-                alert('خطا در ارتباط با سرور');
+                Swal.fire('خطا', 'خطا در ارتباط با سرور', 'error');
                 console.error(error);
             }
         });
-</script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const carTypeSelect = document.getElementById('car_type');
-            const carSelect = document.getElementById('car_select');
-
-            carTypeSelect.addEventListener('change', function() {
-                const selectedType = this.value;
-                // خالی کردن لیست قبلی خودروها
-                carSelect.innerHTML = '<option value="">در حال دریافت خودروها...</option>';
-                const firstDestinationInput = document.querySelector('input[name="destinations[]"]');
-                const firstDestination = firstDestinationInput ? firstDestinationInput.value : '';
-
-                if (selectedType !== '' && firstDestination !== '') {
-
-                    fetch(`/get-cars-by-type/${selectedType}?destination=${firstDestination}`)
-                        .then(response => response.json())
-                        .then(cars => {
-                            carSelect.innerHTML = '<option value="">یک خودرو را انتخاب کنید</option>';
-                            cars.forEach(car => {
-                                const option = document.createElement('option');
-                                option.value = car.id;
-                                option.textContent = car.car_plate;
-                                carSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('خطا در دریافت خودروها:', error);
-                            carSelect.innerHTML = '<option value="">خطا در دریافت خودروها</option>';
-                        });
-                } else {
-                    carSelect.innerHTML = '<option value="">ابتدا نوع کاربری را انتخاب کنید</option>';
-                }
-            });
-        });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const carTypeSelect = document.getElementById('car_type');
@@ -398,7 +383,21 @@
                             cars.forEach(car => {
                                 const option = document.createElement('option');
                                 option.value = car.id;
-                                option.textContent = car.car_plate;
+                                if (car.status === 'inmission') {
+
+                                    option.textContent =
+                                        `🚫 ${car.car_plate} (خودرو در ماموریت است)`;
+
+                                } else if (car.status === 'inactive')
+
+                                {
+                                    option.textContent =
+                                        `🚫 ${car.car_plate} (خودرو غیر فعال است)`;
+                                } else {
+                                    option.textContent = car.car_plate;
+
+                                }
+
                                 carSelect.appendChild(option);
                             });
                         })
@@ -497,8 +496,8 @@
             const newDriverId = document.getElementById('driverSelect').value;
 
             if (!carId || !newDriverId) {
-                alert('لطفا خودرو و راننده را انتخاب کنید.');
-                return;
+                return Swal.fire('خطا', 'لطفا خودرو و راننده را انتخاب کنید.', 'warning');
+
             }
 
             // فرستادن درخواست به سرور
@@ -515,7 +514,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        alert('راننده با موفقیت تغییر کرد!');
+                        Swal.fire('موفق', 'راننده با موفقیت تغییر کرد!', 'success');
                         // بستن مودال
                         document.getElementById('changeDriverModal').classList.add('hidden');
 
@@ -534,10 +533,10 @@
                                 }
                             });
                     } else {
-                        alert('خطا در تغییر راننده');
+                        Swal.fire('خطا', 'خطا در تغییر راننده', 'error');
                     }
                 })
-                .catch(() => alert('خطا در ارتباط با سرور'));
+                .catch(() => Swal.fire('خطا', 'خطا در ارتباط با سرور', 'error'));
         });
 
         document.addEventListener('DOMContentLoaded', function() {

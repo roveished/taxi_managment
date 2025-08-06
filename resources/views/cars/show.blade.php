@@ -64,9 +64,24 @@
                                     <td class="px-4 py-2 text-gray-800">{{ $route->car_plate }}</td>
                                     <td class="px-4 py-2 text-gray-800">{{ $route->car_model }}</td>
                                     <td
-                                        class="px-4 py-2 font-bold {{ $route->status == 'فعال' ? 'text-green-600' : 'text-red-500' }}">
-                                        {{ $route->status }}
+                                        class="px-4 py-2 font-bold 
+    {{ $route->status == 'active'
+        ? 'text-green-600'
+        : ($route->status == 'inactive'
+            ? 'text-red-500'
+            : ($route->status == 'inmission'
+                ? 'text-blue-600'
+                : 'text-gray-500')) }}">
+
+                                        {{ $route->status == 'active'
+                                            ? 'فعال'
+                                            : ($route->status == 'inactive'
+                                                ? 'غیرفعال'
+                                                : ($route->status == 'inmission'
+                                                    ? 'در مأموریت'
+                                                    : 'نامشخص')) }}
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

@@ -44,7 +44,7 @@ class MissionController extends Controller
             $car = Car::findOrFail($request->car_id);
             $realCarType = $car->car_type;
         }
-        Log::info('📦 داده‌های دریافتی از فرم ایجاد ماموریت:', $request->all());
+        //Log::info('📦 داده‌های دریافتی از فرم ایجاد ماموریت:', $request->all());
 
 
         $mission = Mission::create([
@@ -71,6 +71,10 @@ class MissionController extends Controller
 
             }
         }
+        if ($request->status_type !== 'finish') {
+            $car->update(['status' => 'inmission']);
+        }
+
 
         return redirect()->back()->with('success', 'ماموریت با موفقیت ثبت شد.');
     }
